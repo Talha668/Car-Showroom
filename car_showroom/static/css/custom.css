@@ -1,0 +1,389 @@
+/* Luxury Car Showroom - Custom Styles */
+
+/* ===== GLOBAL ENHANCEMENTS ===== */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: -0.01em;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ===== GRADIENT BACKGROUNDS ===== */
+.gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-dark {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+}
+
+.gradient-success {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+}
+
+/* ===== CARD ENHANCEMENTS ===== */
+.car-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #e5e7eb;
+    position: relative;
+    overflow: hidden;
+}
+
+.car-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border-color: #3b82f6;
+}
+
+.car-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.car-card:hover::before {
+    opacity: 1;
+}
+
+/* ===== IMAGE ENHANCEMENTS ===== */
+.car-image {
+    transition: transform 0.5s ease;
+    position: relative;
+}
+
+.car-image:hover {
+    transform: scale(1.03);
+}
+
+.car-image::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.car-card:hover .car-image::after {
+    opacity: 1;
+}
+
+/* ===== BUTTON ENHANCEMENTS ===== */
+.btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+    transform: rotate(45deg);
+    transition: transform 0.6s ease;
+}
+
+.btn-primary:hover::after {
+    transform: translateX(100%) rotate(45deg);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+/* ===== FORM ENHANCEMENTS ===== */
+.form-input {
+    transition: all 0.2s ease;
+    border: 2px solid #e5e7eb;
+}
+
+.form-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    transform: translateY(-1px);
+}
+
+.form-input:hover:not(:focus) {
+    border-color: #9ca3af;
+}
+
+/* ===== NAVBAR ENHANCEMENTS ===== */
+.navbar-glass {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+}
+
+/* ===== PRICE TAG STYLES ===== */
+.price-tag {
+    position: relative;
+    display: inline-block;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+}
+
+.price-tag::before {
+    content: '';
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left: 8px solid #8b5cf6;
+}
+
+/* ===== BADGE ENHANCEMENTS ===== */
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge-featured {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+.badge-new {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.badge-sold {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+    color: white;
+}
+
+/* ===== LOADING ANIMATIONS ===== */
+.loading-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ===== SCROLLBAR STYLING ===== */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+}
+
+/* ===== HOVER EFFECTS FOR LINKS ===== */
+.hover-lift {
+    transition: transform 0.2s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-2px);
+}
+
+/* ===== GRID STAGGER ANIMATION ===== */
+.stagger-item {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: staggerFade 0.6s ease forwards;
+}
+
+@keyframes staggerFade {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Apply staggered animation to grid items */
+.car-grid > *:nth-child(1) { animation-delay: 0.1s; }
+.car-grid > *:nth-child(2) { animation-delay: 0.2s; }
+.car-grid > *:nth-child(3) { animation-delay: 0.3s; }
+.car-grid > *:nth-child(4) { animation-delay: 0.4s; }
+.car-grid > *:nth-child(5) { animation-delay: 0.5s; }
+.car-grid > *:nth-child(6) { animation-delay: 0.6s; }
+
+/* ===== PRICE GLOW EFFECT ===== */
+.price-glow {
+    text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    position: relative;
+}
+
+.price-glow::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.price-glow:hover::after {
+    opacity: 1;
+}
+
+/* ===== MAKE LOGO EFFECTS ===== */
+.make-logo {
+    filter: grayscale(100%);
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.make-logo:hover {
+    filter: grayscale(0%);
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* ===== RESPONSIVE ENHANCEMENTS ===== */
+@media (max-width: 768px) {
+    .car-card:hover {
+        transform: translateY(-4px);
+    }
+}
+
+/* ===== FOOTER ENHANCEMENTS ===== */
+.footer-gradient {
+    background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+}
+
+.footer-link {
+    position: relative;
+    padding-bottom: 2px;
+}
+
+.footer-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: #3b82f6;
+    transition: width 0.3s ease;
+}
+
+.footer-link:hover::after {
+    width: 100%;
+}
+
+/* ===== CUSTOM SHAPES ===== */
+.shape-blob {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border-radius: 40% 60% 60% 40% / 70% 30% 70% 30%;
+    animation: morph 15s linear infinite;
+}
+
+@keyframes morph {
+    0%, 100% { border-radius: 40% 60% 60% 40% / 70% 30% 70% 30%; }
+    25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+    50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+    75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+}
+/* Message styles */
+.message-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    animation: slideDown 0.3s ease;
+}
+
+.message-error {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    animation: slideDown 0.3s ease;
+}
+
+.message-info {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Animate in class for scroll animations */
+.animate-in {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.car-image-fallback {
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.car-image-fallback::before {
+    content: "🚗";
+    font-size: 3rem;
+    opacity: 0.5;
+}

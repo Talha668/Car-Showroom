@@ -1,0 +1,126 @@
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<nav class="bg-white shadow-lg sticky top-0 z-50">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+            <!-- Logo -->
+            <div class="flex items-center">
+                <a href="{% url 'home' %}" class="flex items-center space-x-2">
+                    <i class="fas fa-car text-3xl text-blue-600"></i>
+                    <div>
+                        <span class="text-2xl font-bold text-gray-900">Luxury</span>
+                        <span class="text-2xl font-bold text-blue-600">Cars</span>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="{% url 'home' %}" 
+                   class="text-gray-700 hover:text-blue-600 font-medium {% if request.path == '/' %}text-blue-600 font-semibold{% endif %}">
+                    Home
+                </a>
+                <a href="{% url 'car_list' %}" 
+                   class="text-gray-700 hover:text-blue-600 font-medium {% if 'cars' in request.path %}text-blue-600 font-semibold{% endif %}">
+                    Browse Cars
+                </a>
+                <a href="{% url 'about' %}" 
+                   class="text-gray-700 hover:text-blue-600 font-medium {% if 'about' in request.path %}text-blue-600 font-semibold{% endif %}">
+                    About
+                </a>
+                <a href="{% url 'contact' %}" 
+                   class="text-gray-700 hover:text-blue-600 font-medium {% if 'contact' in request.path %}text-blue-600 font-semibold{% endif %}">
+                    Contact
+                </a>
+                
+                {% if user.is_authenticated %}
+                <div class="relative group">
+                    <button class="flex items-center space-x-2 text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-user-circle text-xl"></i>
+                        <span>{{ user.username }}</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden group-hover:block">
+                        <a href="{% url 'profile' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
+                        <a href="{% url 'saved_cars' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Saved Cars</a>
+                        <a href="{% url 'logout' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Logout</a>
+                    </div>
+                </div>
+                {% else %}
+                <a href="{% url 'login' %}" class="text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-sign-in-alt mr-1"></i>Login
+                </a>
+                {% endif %}
+                
+                <a href="tel:+15551234567" 
+                   class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
+                    <i class="fas fa-phone mr-2"></i>(555) 123-4567
+                </a>
+            </div>
+            
+            <!-- Mobile menu button -->
+            <button id="mobile-menu-button" class="md:hidden text-gray-700" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white py-4 border-t">
+            <div class="space-y-4">
+                <a href="{% url 'home' %}" 
+                   class="block text-gray-700 hover:text-blue-600 font-medium py-2 {% if request.path == '/' %}text-blue-600 font-semibold{% endif %}">
+                    <i class="fas fa-home mr-3"></i>Home
+                </a>
+                <a href="{% url 'car_list' %}" 
+                   class="block text-gray-700 hover:text-blue-600 font-medium py-2 {% if 'cars' in request.path %}text-blue-600 font-semibold{% endif %}">
+                    <i class="fas fa-car mr-3"></i>Browse Cars
+                </a>
+                <a href="{% url 'about' %}" 
+                   class="block text-gray-700 hover:text-blue-600 font-medium py-2 {% if 'about' in request.path %}text-blue-600 font-semibold{% endif %}">
+                    <i class="fas fa-info-circle mr-3"></i>About
+                </a>
+                <a href="{% url 'contact' %}" 
+                   class="block text-gray-700 hover:text-blue-600 font-medium py-2 {% if 'contact' in request.path %}text-blue-600 font-semibold{% endif %}">
+                    <i class="fas fa-envelope mr-3"></i>Contact
+                </a>
+                
+                {% if user.is_authenticated %}
+                <a href="{% url 'profile' %}" class="block text-gray-700 hover:text-blue-600 font-medium py-2">
+                    <i class="fas fa-user-circle mr-3"></i>Profile
+                </a>
+                <a href="{% url 'saved_cars' %}" class="block text-gray-700 hover:text-blue-600 font-medium py-2">
+                    <i class="fas fa-heart mr-3"></i>Saved Cars
+                </a>
+                <a href="{% url 'logout' %}" class="block text-gray-700 hover:text-blue-600 font-medium py-2">
+                    <i class="fas fa-sign-out-alt mr-3"></i>Logout
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}" class="block text-gray-700 hover:text-blue-600 font-medium py-2">
+                    <i class="fas fa-sign-in-alt mr-3"></i>Login
+                </a>
+                {% endif %}
+                
+                <a href="tel:+15551234567" 
+                   class="block bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold text-center hover:bg-blue-700">
+                    <i class="fas fa-phone mr-2"></i>Call Now
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const button = document.getElementById('mobile-menu-button');
+    
+    if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        button.innerHTML = '<i class="fas fa-times text-2xl"></i>';
+    } else {
+        menu.classList.add('hidden');
+        button.innerHTML = '<i class="fas fa-bars text-2xl"></i>';
+    }
+}
+</script>

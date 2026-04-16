@@ -1,0 +1,51 @@
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+
+# PyCharm / IDE
+.idea/
+*.swp
+*.swo
+*~
+.vscode/
+
+# Static files (collected)
+staticfiles/
+static/admin/
+static/rest_framework/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Python
+*.egg
+*.egg-info/
+dist/
+build/
+pip-log.txt
+pip-delete-this-directory.txt
+tree.txt

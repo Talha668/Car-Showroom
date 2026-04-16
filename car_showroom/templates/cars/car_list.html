@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Browse Cars - {{ site_name }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Hero Section -->
+    <div class="gradient-bg text-white rounded-2xl p-8 mb-8">
+        <h1 class="text-4xl font-bold mb-4">Find Your Dream Car</h1>
+        <p class="text-xl mb-6">Browse our exclusive collection of luxury vehicles</p>
+        
+        <!-- Quick Search -->
+        <form method="get" action="{% url 'car_search' %}" class="bg-white p-4 rounded-lg shadow-lg">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <input type="text" name="q" placeholder="Search by make, model, or keyword" 
+                       class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <select name="make" class="p-3 border rounded-lg">
+                    <option value="">All Makes</option>
+                    {% for make in makes %}
+                    <option value="{{ make.id }}">{{ make.name }}</option>
+                    {% endfor %}
+                </select>
+                <select name="price_range" class="p-3 border rounded-lg">
+                    <option value="">Price Range</option>
+                    <option value="0-30000">Under $30,000</option>
+                    <option value="30000-60000">$30,000 - $60,000</option>
+                    <option value="60000-100000">$60,000 - $100,000</option>
+                    <option value="100000-999999999">Over $100,000</option>
+                </select>
+                <button type="submit" class="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition">
+                    <i class="fas fa-search mr-2"></i>Search Cars
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Filters -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-2xl font-bold mb-4">Filter Cars</h2>
+        <form method="get" class="grid grid-cols-2 md:grid-cols-6 gap-4">
+            <!-- Price Range -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Min Price</label>
+                <input type="number" name="min_price" placeholder="$0" 
+                       class="w-full p-2 border rounded">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Max Price</label>
+                <input type="number" name="max_price" placeholder="$500,000" 
+                       class="w-full p-2 border rounded">
+            </div>
+            
+            <!-- Year Range -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Min Year</label>
+                <input type="number" name="min_year" placeholder="2010" 
+                       class="w-full p-2 border rounded">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Max Year</label>
+                <input type="number" name="max_year" placeholder="2024" 
+                       class="w-full p-2 border rounded">
+            </div>
+            
+            <!-- Make Selection -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Make</label>
+                <select name="make" class="w-full p-2 border rounded">
+                    <option value="">All Makes</option>
+                    {% for make in makes %}
+                    <option value="{{ make.id }}">{{ make.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <!-- Filter Button -->
+            <div class="flex items-end">
+                <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
+                    Apply Filters
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Car Grid -->
+    <div class="mb-8">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-3xl font-bold">Available Cars</h2>
+            <span class="text-gray-600">{{ page_obj.paginator.count }} cars found</span>
+        </div>
+        
+        {% if cars %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for car in cars %}
+            <div class="car-card bg-white rounded-lg shadow-md overflow-hidden">
+                <!-- Badges -->
+                <div class="relative">
+                    {% if car.is_featured %}
+                    <span class="absolute top-2 left-2 bg-red-500 text-white px-3 py-1 rounded-full text-sm">
+                        Featured
+                    </span>
+                    {% endif %}
+                    {% if car.is_sold %}
+                    <span class="absolute top-2 right-2 bg-gray-800 text-white px-3 py-1 rounded-full text-sm">
+                        Sold
+                    </span>
+                    {% endif %}
+                    
+                    <!-- Car Image -->
+                    <img src="{{ car.featured_image }}" 
+                         alt="{{ car.year }} {{ car.make.name }} {{ car.model }}"
+                         class="w-full h-48 object-cover"
+                         onerror="this.src='/static/images/car-placeholder.jpg'; this.onerror=null;">     
+                </div>
+                
+                <!-- Car Details -->
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2">
+                        {{ car.year }} {{ car.make.name }} {{ car.model }}
+                    </h3>
+                    
+                    <div class="flex items-center text-gray-600 mb-4">
+                        <span class="mr-4">
+                            <i class="fas fa-tachometer-alt mr-1"></i>{{ car.mileage|floatformat:0 }} mi
+                        </span>
+                        <span class="mr-4">
+                            <i class="fas fa-gas-pump mr-1"></i>{{ car.get_fuel_type_display }}
+                        </span>
+                        <span>
+                            <i class="fas fa-cog mr-1"></i>{{ car.get_transmission_display }}
+                        </span>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-4 line-clamp-2">
+                        {{ car.description|truncatewords:20 }}
+                    </p>
+                    
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-blue-600">
+                            ${{ car.price|floatformat:0 }}
+                        </span>
+                        <a href="{% url 'car_detail' car.pk %}" 
+                           class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="mt-8 flex justify-center">
+            <nav class="inline-flex rounded-md shadow">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                   class="px-4 py-2 border border-gray-300 rounded-l-lg hover:bg-gray-50">
+                    Previous
+                </a>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <span class="px-4 py-2 border border-gray-300 bg-blue-600 text-white">
+                        {{ num }}
+                    </span>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                       class="px-4 py-2 border border-gray-300 hover:bg-gray-50">
+                        {{ num }}
+                    </a>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                   class="px-4 py-2 border border-gray-300 rounded-r-lg hover:bg-gray-50">
+                    Next
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+        
+        {% else %}
+        <div class="text-center py-12">
+            <i class="fas fa-car text-6xl text-gray-300 mb-4"></i>
+            <h3 class="text-2xl font-bold text-gray-700 mb-2">No cars found</h3>
+            <p class="text-gray-600">Try adjusting your filters or search criteria</p>
+            <a href="{% url 'car_list' %}" class="mt-4 inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+                Clear All Filters
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Featured Cars Section -->
+    {% if featured_cars %}
+    <div class="mt-12">
+        <h2 class="text-3xl font-bold mb-6">Featured Luxury Cars</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for car in featured_cars|slice:":3" %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <img src="{{ car.featured_image }}" 
+                     alt="{{ car.year }} {{ car.make.name }} {{ car.model }}"
+                     class="w-full h-40 object-cover">
+                <div class="p-4">
+                    <h4 class="font-bold">{{ car.year }} {{ car.make.name }} {{ car.model }}</h4>
+                    <p class="text-blue-600 font-bold">${{ car.price|floatformat:0 }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

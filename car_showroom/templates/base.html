@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ site_name }}{% endblock %}</title>
+    
+    <!-- Tailwind CSS CDN (for development) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/custom.css">
+    
+    {% block extra_css %}{% endblock %}
+    
+    <style>
+        /* CSS Variables */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        
+        /* Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Car Card Styles */
+        .car-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .car-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        /* Gradient Background */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        /* Animation Classes */
+        .animate-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Message Styles */
+        .message-success {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        
+        .message-error {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+        
+        .message-info, .message-debug {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .message-warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+            border-left: 4px solid #f59e0b;
+        }
+        
+        /* Image Loading States */
+        img {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        img.loaded {
+            opacity: 1;
+        }
+        
+        /* Button Enhancements */
+        .btn-primary, .btn-secondary {
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary.hover, .btn-secondary.hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .image-placeholder {
+        background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 200px;
+        position: relative;
+        }
+        
+        .image-placeholder::before {
+            content: "🚗";
+            font-size: 4rem;
+            opacity: 0.5;
+        }
+
+        .image-placeholder::after {
+            content: "No Image";
+            position: absolute;
+            bottom: 10px;
+            color: #9ca3af;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    {% include 'partials/navbar.html' %}
+    
+    <!-- Messages -->
+    {% if messages %}
+    <div class="container mx-auto px-4 mt-4">
+        {% for message in messages %}
+        <div class="p-4 rounded-lg message-{{ message.tags }} animate-in">
+            <div class="flex items-center">
+                {% if message.tags == 'success' %}
+                <i class="fas fa-check-circle mr-3"></i>
+                {% elif message.tags == 'error' %}
+                <i class="fas fa-exclamation-circle mr-3"></i>
+                {% elif message.tags == 'warning' %}
+                <i class="fas fa-exclamation-triangle mr-3"></i>
+                {% else %}
+                <i class="fas fa-info-circle mr-3"></i>
+                {% endif %}
+                <span>{{ message }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% if car.main_image %}
+        <img src="{{ car.main_image.url }}" alt="Car" 
+            onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'image-placeholder\'></div>';">
+    {% else %}
+        <div class="image-placeholder"></div>
+    {% endif %}
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    {% include 'partials/footer.html' %}
+    
+    <!-- Custom JavaScript -->
+    <script src="/static/js/enhancements.js"></script>
+    
+    {% block extra_js %}{% endblock %}
+    
+    <script>
+        // API Configuration
+        const API_BASE_URL = '/api';
+        const API_ENDPOINTS = {
+            cars: `${API_BASE_URL}/cars/`,
+            featured: `${API_BASE_URL}/cars/featured/`,
+            newArrivals: `${API_BASE_URL}/cars/new-arrivals/`,
+            search: `${API_BASE_URL}/search/`,
+            makes: `${API_BASE_URL}/makes/`,
+            statistics: `${API_BASE_URL}/statistics/`,
+            login: `${API_BASE_URL}/auth/login/`,
+            register: `${API_BASE_URL}/auth/register/`,
+        };
+
+        // API Service Class
+        class CarAPI {
+            static async fetchCars(params = {}) {
+                const queryString = new URLSearchParams(params).toString();
+                const response = await fetch(`${API_ENDPOINTS.cars}?${queryString}`);
+                return await response.json();
+            }
+
+            static async fetchCarById(id) {
+                const response = await fetch(`${API_ENDPOINTS.cars}${id}/`);
+                return await response.json();
+            }
+
+            static async fetchFeaturedCars() {
+                const response = await fetch(API_ENDPOINTS.featured);
+                return await response.json();
+            }
+
+            static async fetchNewArrivals() {
+                const response = await fetch(API_ENDPOINTS.newArrivals);
+                return await response.json();
+            }
+
+            static async searchCars(query) {
+                const response = await fetch(`${API_ENDPOINTS.search}?q=${encodeURIComponent(query)}`);
+                return await response.json();
+            }
+
+            static async fetchMakes() {
+                const response = await fetch(API_ENDPOINTS.makes);
+                return await response.json();
+            }
+
+            static async fetchStatistics() {
+                const response = await fetch(API_ENDPOINTS.statistics);
+                return await response.json();
+            }
+
+            static async submitInquiry(carId, data) {
+                const response = await fetch(`${API_ENDPOINTS.cars}${carId}/create_inquiry/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken(),
+                    },
+                    body: JSON.stringify(data)
+                });
+                return await response.json();
+            }
+
+            static async scheduleTestDrive(carId, data) {
+                const response = await fetch(`${API_ENDPOINTS.cars}${carId}/schedule_test_drive/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken(),
+                    },
+                    body: JSON.stringify(data)
+                });
+                return await response.json();
+            }
+
+            static async login(username, password) {
+                const response = await fetch(API_ENDPOINTS.login, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                return await response.json();
+            }
+
+            static async register(userData) {
+                const response = await fetch(API_ENDPOINTS.register, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData)
+                });
+                return await response.json();
+            }
+        }
+
+        // Helper function to get CSRF token
+        function getCSRFToken() {
+            return document.querySelector('[name=csrfmiddlewaretoken]')?.value || '';
+        }
+
+        // Image gallery functionality
+        function openImageGallery(mainImageUrl) {
+            console.log('Opening gallery for:', mainImageUrl);
+        }
+        
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+        
+        // Price formatter
+        function formatPrice(price) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0
+            }).format(price);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add loading state to images
+            document.querySelectorAll('img').forEach(img => {
+                if (img.complete) {
+                    img.classList.add('loaded');
+                } else {
+                    img.addEventListener('load', function() {
+                        this.classList.add('loaded');
+                    });
+                }
+            });
+            
+            // Add hover effects to buttons
+            document.querySelectorAll('.btn-primary, .btn-secondary').forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.classList.add('hover');
+                });
+                btn.addEventListener('mouseleave', function() {
+                    this.classList.remove('hover');
+                });
+            });
+            
+            // Add price formatting to all prices
+            document.querySelectorAll('.price').forEach(priceEl => {
+                const price = parseFloat(priceEl.textContent.replace(/[^0-9.]/g, ''));
+                if (!isNaN(price)) {
+                    priceEl.textContent = formatPrice(price);
+                }
+            });
+            
+            // API-based initializations
+            if (window.location.pathname === '/cars/') {
+                loadCarsWithAPI();
+            }
+            
+            updateStatistics();
+        });
+
+        async function loadCarsWithAPI() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const data = await CarAPI.fetchCars(Object.fromEntries(params));
+                renderCars(data.results);
+                setupPagination(data);
+            } catch (error) {
+                console.error('Error loading cars:', error);
+            }
+        }
+
+        async function updateStatistics() {
+            try {
+                const stats = await CarAPI.fetchStatistics();
+                const statsElement = document.getElementById('api-stats');
+                if (statsElement) {
+                    statsElement.innerHTML = `
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold">${stats.total_cars}+</div>
+                                <div class="text-sm">Total Cars</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold">${stats.available_cars}</div>
+                                <div class="text-sm">Available Now</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold">${stats.total_makes}</div>
+                                <div class="text-sm">Brands</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold">$${stats.avg_price?.toLocaleString() || '0'}</div>
+                                <div class="text-sm">Avg Price</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+            }
+        }
+
+        function renderCars(cars) {
+            const container = document.getElementById('cars-container');
+            if (!container) return;
+            
+            container.innerHTML = cars.map(car => `
+                <div class="car-card bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="relative">
+                        ${car.is_featured ? '<span class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs">Featured</span>' : ''}
+                        <img src="${car.main_image || '/static/images/car-placeholder.jpg'}" 
+                            alt="${car.year} ${car.make.name} ${car.model}"
+                            class="w-full h-48 object-cover">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg">${car.year} ${car.make.name} ${car.model}</h3>
+                        <div class="flex items-center text-gray-600 text-sm my-2">
+                            <span class="mr-3"><i class="fas fa-road"></i> ${car.mileage.toLocaleString()} mi</span>
+                            <span class="mr-3"><i class="fas fa-gas-pump"></i> ${car.fuel_type}</span>
+                            <span><i class="fas fa-cog"></i> ${car.transmission}</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-2xl font-bold text-blue-600 price">$${car.price.toLocaleString()}</span>
+                            <button onclick="viewCar(${car.id})" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function viewCar(id) {
+            window.location.href = `/cars/${id}/`;
+        }
+    </script>
+</body>
+</html>

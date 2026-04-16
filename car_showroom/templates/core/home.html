@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - Luxury Car Showroom{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative bg-gradient-to-r from-blue-900 to-gray-900 text-white py-20">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-5xl font-bold mb-6">Find Your Dream Car</h1>
+        <p class="text-xl mb-8 max-w-2xl mx-auto">
+            Discover our exclusive collection of luxury vehicles. From sports cars to premium SUVs.
+        </p>
+        <a href="{% url 'car_list' %}" 
+           class="bg-white text-blue-900 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition">
+            Browse Inventory
+        </a>
+    </div>
+</section>
+
+<!-- Featured Cars -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center mb-10">
+            <h2 class="text-3xl font-bold">Featured Vehicles</h2>
+            <a href="{% url 'car_list' %}" class="text-blue-600 hover:text-blue-800 font-semibold">
+                View All →
+            </a>
+        </div>
+        
+        {% if featured_cars %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for car in featured_cars %}
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
+                {% if car.is_featured %}
+                <div class="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                    Featured
+                </div>
+                {% endif %}
+                
+                <img src="{{ car.featured_image }}" 
+                     alt="{{ car.year }} {{ car.make.name }} {{ car.model }}"
+                     class="w-full h-56 object-cover">
+                
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="text-xl font-bold">{{ car.year }} {{ car.make.name }} {{ car.model }}</h3>
+                        <span class="text-2xl font-bold text-blue-600">${{ car.price|floatformat:0 }}</span>
+                    </div>
+                    
+                    <div class="flex items-center text-gray-600 mb-4">
+                        <span class="mr-4">
+                            <i class="fas fa-tachometer-alt mr-1"></i>{{ car.mileage|floatformat:0 }} mi
+                        </span>
+                        <span class="mr-4">
+                            <i class="fas fa-gas-pump mr-1"></i>{{ car.get_fuel_type_display }}
+                        </span>
+                        <span>
+                            <i class="fas fa-cog mr-1"></i>{{ car.get_transmission_display }}
+                        </span>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">{{ car.body_style|title }}</span>
+                        <a href="{% url 'car_detail' car.pk %}" 
+                           class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-12">
+            <i class="fas fa-car text-6xl text-gray-300 mb-4"></i>
+            <p class="text-gray-600">No featured cars available at the moment.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- New Arrivals -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center mb-10">
+            <h2 class="text-3xl font-bold">New Arrivals</h2>
+            <a href="{% url 'car_list' %}?sort=newest" class="text-blue-600 hover:text-blue-800 font-semibold">
+                View All →
+            </a>
+        </div>
+        
+        {% if new_arrivals %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for car in new_arrivals %}
+            <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+                <img src="{{ car.featured_image }}" 
+                     alt="{{ car.year }} {{ car.make.name }} {{ car.model }}"
+                     class="w-full h-48 object-cover">
+                
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="text-lg font-bold">{{ car.year }} {{ car.make.name }} {{ car.model }}</h3>
+                        <span class="text-xl font-bold text-blue-600">${{ car.price|floatformat:0 }}</span>
+                    </div>
+                    
+                    <div class="flex items-center text-gray-600 mb-4 text-sm">
+                        <span class="mr-3">
+                            <i class="fas fa-calendar mr-1"></i>{{ car.year }}
+                        </span>
+                        <span class="mr-3">
+                            <i class="fas fa-road mr-1"></i>{{ car.mileage|floatformat:0 }} mi
+                        </span>
+                    </div>
+                    
+                    <a href="{% url 'car_detail' car.pk %}" 
+                       class="block text-center bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition">
+                        Explore
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">Why Choose Our Showroom</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center">
+                <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-shield-alt text-2xl text-blue-600"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Quality Guaranteed</h3>
+                <p class="text-gray-600">Every vehicle undergoes rigorous inspection and comes with a comprehensive warranty.</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-handshake text-2xl text-blue-600"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Transparent Pricing</h3>
+                <p class="text-gray-600">No hidden fees. Our pricing is clear, competitive, and includes all necessary documentation.</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-headset text-2xl text-blue-600"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Expert Support</h3>
+                <p class="text-gray-600">Our team of automotive experts is here to help you find the perfect vehicle.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-16 bg-gradient-to-r from-blue-800 to-blue-600 text-white">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl font-bold mb-6">Ready to Drive Your Dream Car?</h2>
+        <p class="text-xl mb-8 max-w-2xl mx-auto">
+            Schedule a test drive today and experience luxury like never before.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="{% url 'car_list' %}" 
+               class="bg-white text-blue-800 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition">
+                Browse All Cars
+            </a>
+            <a href="{% url 'contact' %}" 
+               class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-blue-800 transition">
+                Contact Us
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- To Show API-loaded content -->
+<div id="api-featured-cars" class="mt-8"></div>
+
+<script>
+// Load featured cars via API
+document.addEventListener('DOMContentLoaded', async function() {
+    try {
+        const data = await CarAPI.fetchFeaturedCars();
+        const container = document.getElementById('api-featured-cars');
+        
+        if (data.results && data.results.length > 0) {
+            container.innerHTML = `
+                <h2 class="text-3xl font-bold mb-6 text-center">Featured Cars (Loaded via API)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    ${data.results.slice(0, 3).map(car => `
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                            <img src="${car.main_image || '/static/images/car-placeholder.jpg'}" 
+                                 alt="${car.year} ${car.make.name} ${car.model}"
+                                 class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <h3 class="text-xl font-bold">${car.year} ${car.make.name} ${car.model}</h3>
+                                <p class="text-blue-600 font-bold text-2xl mt-2">$${car.price.toLocaleString()}</p>
+                                <button onclick="viewCar(${car.id})" 
+                                        class="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+                                    View Details
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Error loading featured cars:', error);
+    }
+});
+</script>
+
+{% endblock %}

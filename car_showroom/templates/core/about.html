@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - Luxury Car Showroom{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+    <!-- Hero Section -->
+    <div class="text-center mb-16">
+        <h1 class="text-5xl font-bold text-gray-900 mb-6">About Luxury Car Showroom</h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            We're more than just a car dealership - we're passionate about connecting people with their dream vehicles.
+        </p>
+    </div>
+    
+    <!-- Story Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+        <div>
+            <h2 class="text-3xl font-bold mb-6">Our Story</h2>
+            <div class="space-y-4 text-gray-700">
+                <p>
+                    Founded in 2010, Luxury Car Showroom began with a simple mission: to provide an exceptional car buying 
+                    experience that focuses on quality, transparency, and customer satisfaction.
+                </p>
+                <p>
+                    What started as a small family business has grown into one of the region's most trusted sources for 
+                    premium and luxury vehicles. Our success is built on lasting relationships with our customers.
+                </p>
+                <p>
+                    We believe that buying a car should be an exciting, stress-free experience. That's why we've created 
+                    a showroom environment that feels more like a premium retail experience than a traditional dealership.
+                </p>
+            </div>
+        </div>
+        <div class="rounded-2xl overflow-hidden shadow-2xl">
+            <img src="https://images.unsplash.com/photo-1485291571150-772bcfc10da5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
+                 alt="Our Showroom" class="w-full h-96 object-cover">
+        </div>
+    </div>
+    
+    <!-- Values Section -->
+    <div class="mb-16">
+        <h2 class="text-3xl font-bold text-center mb-12">Our Core Values</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white p-8 rounded-xl shadow-lg text-center">
+                <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-gem text-3xl text-blue-600"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Quality First</h3>
+                <p class="text-gray-600">
+                    Every vehicle in our inventory undergoes a 150-point inspection to ensure it meets our strict quality standards.
+                </p>
+            </div>
+            
+            <div class="bg-white p-8 rounded-xl shadow-lg text-center">
+                <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-handshake text-3xl text-blue-600"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Transparent Dealings</h3>
+                <p class="text-gray-600">
+                    No hidden fees, no pressure tactics. We believe in honest, straightforward pricing and communication.
+                </p>
+            </div>
+            
+            <div class="bg-white p-8 rounded-xl shadow-lg text-center">
+                <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-users text-3xl text-blue-600"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4">Customer Focus</h3>
+                <p class="text-gray-600">
+                    Your satisfaction is our priority. We work tirelessly to ensure you find the perfect vehicle for your needs.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Team Section -->
+    <div class="mb-16">
+        <h2 class="text-3xl font-bold text-center mb-12">Meet Our Team</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="text-center">
+                <div class="w-48 h-48 rounded-full overflow-hidden mx-auto mb-4">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                         alt="Alex Johnson" class="w-full h-full object-cover">
+                </div>
+                <h3 class="text-xl font-bold">Alex Johnson</h3>
+                <p class="text-blue-600 font-semibold">Founder & CEO</p>
+                <p class="text-gray-600 mt-2">20+ years in automotive industry</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-48 h-48 rounded-full overflow-hidden mx-auto mb-4">
+                    <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                         alt="Sarah Williams" class="w-full h-full object-cover">
+                </div>
+                <h3 class="text-xl font-bold">Sarah Williams</h3>
+                <p class="text-blue-600 font-semibold">Sales Director</p>
+                <p class="text-gray-600 mt-2">Specializes in luxury European vehicles</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-48 h-48 rounded-full overflow-hidden mx-auto mb-4">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                         alt="Michael Chen" class="w-full h-full object-cover">
+                </div>
+                <h3 class="text-xl font-bold">Michael Chen</h3>
+                <p class="text-blue-600 font-semibold">Service Manager</p>
+                <p class="text-gray-600 mt-2">ASE certified master technician</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-48 h-48 rounded-full overflow-hidden mx-auto mb-4">
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                         alt="David Rodriguez" class="w-full h-full object-cover">
+                </div>
+                <h3 class="text-xl font-bold">David Rodriguez</h3>
+                <p class="text-blue-600 font-semibold">Finance Specialist</p>
+                <p class="text-gray-600 mt-2">Helping clients for over 15 years</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Section -->
+    <div class="bg-gradient-to-r from-blue-900 to-gray-900 text-white rounded-2xl p-12 mb-16">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+                <div class="text-5xl font-bold mb-2">500+</div>
+                <div class="text-lg">Happy Customers</div>
+            </div>
+            <div>
+                <div class="text-5xl font-bold mb-2">150+</div>
+                <div class="text-lg">Cars in Inventory</div>
+            </div>
+            <div>
+                <div class="text-5xl font-bold mb-2">12</div>
+                <div class="text-lg">Years Experience</div>
+            </div>
+            <div>
+                <div class="text-5xl font-bold mb-2">98%</div>
+                <div class="text-lg">Customer Satisfaction</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Call to Action -->
+    <div class="text-center">
+        <h2 class="text-3xl font-bold mb-6">Ready to Visit Our Showroom?</h2>
+        <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+            Come see our collection in person and experience the Luxury Car Showroom difference.
+        </p>
+        <a href="{% url 'contact' %}" 
+           class="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition">
+            Contact Us Today
+        </a>
+    </div>
+</div>
+{% endblock %}

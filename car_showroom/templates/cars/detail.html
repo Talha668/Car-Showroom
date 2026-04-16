@@ -1,0 +1,465 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ car.year }} {{ car.make.name }} {{ car.model }} - Luxury Cars{% endblock %}
+
+{% block extra_css %}
+<style>
+    .image-gallery {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .gallery-thumbnail {
+        cursor: pointer;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        overflow: hidden;
+        height: 80px;
+        transition: all 0.3s ease;
+    }
+    .gallery-thumbnail:hover, .gallery-thumbnail.active {
+        border-color: #2563eb;
+        transform: translateY(-2px);
+    }
+    .gallery-thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .spec-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    .spec-item:last-child {
+        border-bottom: none;
+    }
+    
+    /* Enhanced Gallery Styles */
+    .car-image {
+        transition: transform 0.5s ease, opacity 0.2s ease;
+    }
+    .car-image:hover {
+        transform: scale(1.02);
+    }
+    .price-glow {
+        text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+    }
+    .aspect-w-16 {
+        position: relative;
+        padding-bottom: 56.25%;
+    }
+    .aspect-w-16 img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Breadcrumb -->
+    <nav class="text-sm text-gray-600 mb-6">
+        <a href="{% url 'home' %}" class="hover:text-blue-600">Home</a> /
+        <a href="{% url 'car_list' %}" class="hover:text-blue-600">Cars</a> /
+        {% if car.make.slug %}
+            <a href="{% url 'cars_by_make' car.make.slug %}" class="hover:text-blue-600">{{ car.make.name }}</a> /
+        {% endif %}    
+        <span class="text-gray-800">{{ car.year }} {{ car.model }}</span>
+    </nav>
+    
+    <!-- Status Badges -->
+    <div class="mb-4">
+        {% if car.is_featured %}
+        <span class="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold mr-2">
+            Featured
+        </span>
+        {% endif %}
+        {% if car.is_sold %}
+        <span class="bg-gray-800 text-white px-3 py-1 rounded-full text-sm font-semibold mr-2">
+            Sold
+        </span>
+        {% endif %}
+        {% if car.is_reserved %}
+        <span class="bg-yellow-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+            Reserved
+        </span>
+        {% endif %}
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left Column - Images (ENHANCED) -->
+        <div class="lg:col-span-2">
+            <!-- Main Image with enhanced styling -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-6 transform transition-all duration-300 hover:shadow-2xl">
+                <div class="relative">
+                    <img id="mainImage" 
+                         src="{{ car.featured_image }}" 
+                         alt="{{ car.year }} {{ car.make.name }} {{ car.model }}"
+                         class="w-full h-[500px] object-cover car-image"
+                         loading="lazy">
+                    
+                    <!-- Image overlay with info -->
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6 text-white">
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <h1 class="text-3xl font-bold">{{ car.year }} {{ car.make.name }} {{ car.model }}</h1>
+                                <p class="text-gray-200 mt-2">Click thumbnails to view different angles</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-4xl font-bold price-glow">${{ car.price|floatformat:0 }}</div>
+                                {% if not car.is_sold %}
+                                <span class="inline-block mt-2 px-3 py-1 bg-green-500/90 text-white rounded-full text-sm font-semibold">
+                                    <i class="fas fa-check-circle mr-1"></i> Available
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dynamic Thumbnail Gallery using car.all_images -->
+            {% with car.all_images as car_images %}
+            {% if car_images %}
+            <div class="image-gallery">
+                {% for image_url in car_images %}
+                <div class="gallery-thumbnail {% if forloop.first %}active{% endif %}" 
+                     onclick="changeMainImage('{{ image_url }}', this)">
+                    <img src="{{ image_url }}" 
+                         alt="Gallery image {{ forloop.counter }}"
+                         loading="lazy">
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+        </div>
+        
+        <!-- Right Column - Details & Actions -->
+        <div class="space-y-6">
+            <!-- Title and Price -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h1 class="text-3xl font-bold mb-2">{{ car.year }} {{ car.make.name }} {{ car.model }}</h1>
+                <p class="text-gray-600 mb-4">{{ car.vin }}</p>
+                
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="text-4xl font-bold text-blue-600">${{ car.price|floatformat:0 }}</span>
+                        {% if car.mileage %}
+                        <p class="text-gray-600 mt-1">{{ car.mileage|floatformat:0 }} miles</p>
+                        {% endif %}
+                    </div>
+                    {% if not car.is_sold %}
+                    <span class="bg-green-100 text-green-800 px-4 py-2 rounded-lg font-semibold">
+                        Available
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold mb-4">Interested in this car?</h2>
+                
+                <div class="space-y-3">
+                    <button onclick="scrollToInquiry()" 
+                            class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                        <i class="fas fa-envelope mr-2"></i>Send Inquiry
+                    </button>
+                    
+                    <button onclick="scrollToTestDrive()" 
+                            class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
+                        <i class="fas fa-calendar-alt mr-2"></i>Schedule Test Drive
+                    </button>
+                    
+                    {% if not car.is_sold %}
+                    <a href="tel:+15551234567" 
+                       class="block w-full bg-gray-800 text-white py-3 rounded-lg font-semibold hover:bg-gray-900 transition text-center">
+                        <i class="fas fa-phone mr-2"></i>Call Now: (555) 123-4567
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Quick Specs -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold mb-4">Quick Specs</h2>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Body Style</span>
+                        <span class="font-semibold">{{ car.get_body_style_display }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Transmission</span>
+                        <span class="font-semibold">{{ car.get_transmission_display }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Fuel Type</span>
+                        <span class="font-semibold">{{ car.get_fuel_type_display }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Engine</span>
+                        <span class="font-semibold">{{ car.engine_size }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Color</span>
+                        <span class="font-semibold">{{ car.color }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Detailed Information -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+        <!-- Full Specifications -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold mb-6">Full Specifications</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4 text-blue-600">Vehicle Information</h3>
+                        <div class="spec-item">
+                            <span class="text-gray-600">Make</span>
+                            <span class="font-medium">{{ car.make.name }}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="text-gray-600">Model</span>
+                            <span class="font-medium">{{ car.model }}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="text-gray-600">Year</span>
+                            <span class="font-medium">{{ car.year }}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="text-gray-600">VIN</span>
+                            <span class="font-medium font-mono">{{ car.vin }}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="text-gray-600">Registration</span>
+                            <span class="font-medium">{{ car.registration|default:"Not specified" }}</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4 text-blue-600">Technical Details</h3>
+                        <div class="spec-item">
+                            <span class="text-gray-600">Engine Size</span>
+                            <span class="font-medium">{{ car.engine_size }}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="text-gray-600">Horsepower</span>
+                            <span class="font-medium">{{ car.horsepower|default:"Not specified" }}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="text-gray-600">Transmission</span>
+                            <span class="font-medium">{{ car.get_transmission_display }}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="text-gray-600">Fuel Type</span>
+                            <span class="font-medium">{{ car.get_fuel_type_display }}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="text-gray-600">Doors/Seats</span>
+                            <span class="font-medium">{{ car.doors }} doors, {{ car.seats }} seats</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Description -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mt-6">
+                <h2 class="text-2xl font-bold mb-4">Description</h2>
+                <div class="prose max-w-none">
+                    <p class="text-gray-700 leading-relaxed">{{ car.description|linebreaks }}</p>
+                </div>
+            </div>
+            
+            <!-- Features -->
+            {% if car.features %}
+            <div class="bg-white rounded-xl shadow-lg p-6 mt-6">
+                <h2 class="text-2xl font-bold mb-4">Features & Options</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {% for feature in car.get_features_list %}
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-3"></i>
+                        <span>{{ feature }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Contact Forms Sidebar -->
+        <div>
+            <!-- Inquiry Form -->
+            <div id="inquiryForm" class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                <h2 class="text-xl font-bold mb-4">Request More Information</h2>
+                <form method="post" action="{% url 'create_inquiry' car.id %}">
+                    {% csrf_token %}
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Your Name *</label>
+                            {{ inquiry_form.name }}
+                            {% if inquiry_form.name.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ inquiry_form.name.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+                            {{ inquiry_form.email }}
+                            {% if inquiry_form.email.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ inquiry_form.email.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                            {{ inquiry_form.phone }}
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Your Message *</label>
+                            {{ inquiry_form.message }}
+                            {% if inquiry_form.message.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ inquiry_form.message.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Preferred Contact Method</label>
+                            {{ inquiry_form.preferred_contact }}
+                        </div>
+                        
+                        <button type="submit" 
+                                class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                            Send Inquiry
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Test Drive Form -->
+            <div id="testDriveForm" class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold mb-4">Schedule a Test Drive</h2>
+                <form method="post" action="{% url 'schedule_test_drive' car.id %}">
+                    {% csrf_token %}
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Your Name *</label>
+                            {{ test_drive_form.name }}
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                            {{ test_drive_form.email }}
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
+                            {{ test_drive_form.phone }}
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Preferred Date *</label>
+                                {{ test_drive_form.preferred_date }}
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Preferred Time *</label>
+                                {{ test_drive_form.preferred_time }}
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Additional Notes</label>
+                            {{ test_drive_form.message }}
+                        </div>
+                        
+                        <button type="submit" 
+                                class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
+                            Schedule Test Drive
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Related Cars -->
+    {% if related_cars %}
+    <div class="mt-12">
+        <h2 class="text-2xl font-bold mb-6">Similar Vehicles</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for related_car in related_cars %}
+            <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+                <a href="{% url 'car_detail' related_car.pk %}">
+                    <img src="{{ related_car.featured_image }}" 
+                         alt="{{ related_car.year }} {{ related_car.make.name }} {{ related_car.model }}"
+                         class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-2">{{ related_car.year }} {{ related_car.make.name }} {{ related_car.model }}</h3>
+                        <p class="text-blue-600 font-bold text-xl mb-2">${{ related_car.price|floatformat:0 }}</p>
+                        <div class="flex items-center text-gray-600 text-sm">
+                            <span class="mr-3">
+                                <i class="fas fa-road mr-1"></i>{{ related_car.mileage|floatformat:0 }} mi
+                            </span>
+                            <span>{{ related_car.get_fuel_type_display }}</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function changeMainImage(imageUrl, element) {
+        // Update main image with fade effect
+        const mainImage = document.getElementById('mainImage');
+        mainImage.style.opacity = '0.5';
+        
+        setTimeout(() => {
+            mainImage.src = imageUrl;
+            mainImage.style.opacity = '1';
+        }, 200);
+        
+        // Update active thumbnail styling
+        document.querySelectorAll('.gallery-thumbnail').forEach(thumb => {
+            thumb.classList.remove('active');
+        });
+        element.classList.add('active');
+    }
+    
+    function scrollToInquiry() {
+        document.getElementById('inquiryForm').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+    
+    function scrollToTestDrive() {
+        document.getElementById('testDriveForm').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+</script>
+{% endblock %}
